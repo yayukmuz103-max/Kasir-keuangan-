@@ -1,47 +1,26 @@
 name: Build APK
 
 on:
-
-push:
-
-branches: [main] workflow_dispatch:
+  push:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ambil kode
+        uses: actions/checkout@v4
 
-build:
+      - name: Build APK dengan Buildozer
+        id: buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        with:
+          command: buildozer android debug
+          buildozer_version: stable
 
-runs-on: ubuntu-latest
-
-steps:
-
-name: Ambil kode
-
-uses: actions/checkout@v4
-
-action@v1
-
-name: Build APK dengan Buildozer
-
-id: buildozer
-
-uses: ArtemSBulgakov/buildozer-
-
-with:
-
-command: buildozer android debug
-
-buildozer_version: stable
-
-name: Simpan APK
-
-uses: actions/upload-artifact@v4
-
-with:
-
-name: kasir-apk
-
-path:
-
-${{
-
-steps.buildozer.outputs.filename }}
+      - name: Simpan APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: kasir-apk
+          path: ${{ steps.buildozer.outputs.filename }}
